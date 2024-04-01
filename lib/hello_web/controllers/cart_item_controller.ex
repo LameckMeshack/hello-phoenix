@@ -17,6 +17,10 @@ defmodule HelloWeb.CartItemController do
     end
   end
 
+  def show(conn, _params) do
+    render(conn, :show, changeset: ShoppingCart.change_cart(conn.assigns.cart))
+  end
+
   def delete(conn, %{"id" => product_id}) do
     {:ok, _cart} = ShoppingCart.remove_item_from_cart(conn.assigns.cart, product_id)
     redirect(conn, to: ~p"/cart")

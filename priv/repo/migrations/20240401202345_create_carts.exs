@@ -3,11 +3,11 @@ defmodule Hello.Repo.Migrations.CreateCarts do
 
   def change do
     create table(:carts) do
-      add :user_uuid, :uuid
+      add :user_id, :uuid
 
       timestamps(type: :utc_datetime)
     end
 
-    create unique_index(:carts, [:user_uuid])
+    create unique_index(:carts, [:user_id])
   end
 end
