@@ -11,6 +11,7 @@ defmodule HelloWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
+    plug HelloWeb.Plugs.Locale, "en"
   end
 
   pipeline :api do
