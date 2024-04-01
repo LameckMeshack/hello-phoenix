@@ -108,9 +108,21 @@ defmodule Hello.ShoppingCart do
 
   """
   def update_cart(%Cart{} = cart, attrs) do
-    cart
-    |> Cart.changeset(attrs)
-    |> Repo.update()
+    changeset =
+      cart
+      |> Cart.changeset(attrs)
+      |> Ecto.Changeset.cast_assoc(:items, with: &CartItem.changeset/2)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:cart, changeset)
+    |> Ecto.Multi.delete_all(:discarded_items, fn %{cart: cart} ->
+      from(i in CartItem, where: i.cart_id == ^cart.id and i.quantity == 0)
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{cart: cart}} -> {:ok, cart}
+      {:error, :cart, changeset, _changes_so_far} -> {:error, changeset}
+    end
   end
 
   @doc """
@@ -152,6 +164,18 @@ defmodule Hello.ShoppingCart do
         preload: [items: {i, product: p}]
       )
     )
+  end
+
+  def total_item_price(%CartItem{} = item) do
+    Decimal.mult(item.product.price, item.quantity)
+  end
+
+  def total_cart_price(%Cart{} = cart) do
+    Enum.reduce(cart.items, 0, fn item, acc ->
+      item
+      |> total_item_price()
+      |> Decimal.add(acc)
+    end)
   end
 
   # alias Hello.ShoppingCart.CartItem
