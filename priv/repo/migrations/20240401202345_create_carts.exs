@@ -3,7 +3,7 @@ defmodule Hello.Repo.Migrations.CreateCarts do
 
   def change do
     create table(:carts) do
-      add :user_id, :uuid
+      add :user_id, references(:users, on_delete: :delete_all)
 
       timestamps(type: :utc_datetime)
     end

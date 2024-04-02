@@ -30,7 +30,7 @@ defmodule HelloWeb.Router do
   alias Hello.ShoppingCart
 
   defp fetch_current_cart(conn, _opts) do
-    if cart = ShoppingCart.get_cart_by_user_uuid(conn.assigns.current_user.id) do
+    if cart = ShoppingCart.get_cart_by_user_id(conn.assigns.current_user.id) do
       assign(conn, :cart, cart)
     else
       {:ok, new_cart} = ShoppingCart.create_cart(conn.assigns.current_user.id)

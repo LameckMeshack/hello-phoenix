@@ -67,7 +67,7 @@ defmodule Hello.ShoppingCart do
   end
 
 
-  defp reload_cart(%Cart{} = cart), do: get_cart_by_user_uuid(cart.user_id)
+  defp reload_cart(%Cart{} = cart), do: get_cart_by_user_id(cart.user_id)
 
 
   def add_item_to_cart(%Cart{} = cart, product_id) do
@@ -154,7 +154,7 @@ defmodule Hello.ShoppingCart do
     Cart.changeset(cart, attrs)
   end
 
-  def get_cart_by_user_uuid(user_id) do
+  def get_cart_by_user_id(user_id) do
     Repo.one(
       from(c in Cart,
         where: c.user_id == ^user_id,
